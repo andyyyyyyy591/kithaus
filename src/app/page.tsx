@@ -46,6 +46,13 @@ export default async function Home() {
     mundiales: '#0f0c08',
   }
 
+  const collectionImages: Record<string, string> = {
+    clubes: '/collections/clubes.jpg',
+    selecciones: '/collections/selecciones.jpg',
+    retros: '/collections/retros.jpg',
+    mundiales: '/collections/mundiales.jpg',
+  }
+
   return (
     <>
       {/* HERO — Diego México 86 */}
@@ -157,12 +164,12 @@ export default async function Home() {
                 background: collectionCovers[col.slug] ?? '#2a1f14',
               }}
             >
-              {col.cover_image && (
+              {(col.cover_image || collectionImages[col.slug]) && (
                 <Image
-                  src={col.cover_image}
+                  src={col.cover_image || collectionImages[col.slug]}
                   alt={col.name}
                   fill
-                  className="object-cover opacity-50 transition-transform duration-500 group-hover:scale-105"
+                  className="object-cover opacity-60 transition-transform duration-500 group-hover:scale-105"
                 />
               )}
               <div className="relative z-10">
