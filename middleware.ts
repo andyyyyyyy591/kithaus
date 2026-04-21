@@ -35,6 +35,16 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL('/admin/login', request.url))
     }
 
+    // Verificar que el email esté en la lista de admins autorizados
+    if (user) {
+      const allowedEmails = (process.env.ADMIN_EMAILS ?? '').split(',').map(e => e.trim().toLowerCase())
+      const userEmail = (user.email ?? '').toLowerCase()
+      if (allowedEmails.length > 0 && allowedEmails[0] !== '' && !allowedEmails.includes(userEmail)) {
+        await supabase.auth.signOut()
+        return NextResponse.redirect(new URL('/admin/login', request.url))
+      }
+    }
+
     if (isLoginPage && user) {
       return NextResponse.redirect(new URL('/admin/dashboard', request.url))
     }
