@@ -70,7 +70,7 @@ export default async function Home() {
         {/* Text overlay centrado */}
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
           <div className="w-[60px] h-px mx-auto mb-5" style={{ background: '#9c7a52' }} />
-          <p className="font-cormorant text-[11px] uppercase mb-4" style={{ letterSpacing: '5px', color: '#9c7a52' }}>
+          <p className="font-cormorant text-[11px] uppercase mb-4" style={{ letterSpacing: '5px', color: 'rgba(240,234,216,0.85)' }}>
             Colección 2026
           </p>
           <h1
@@ -189,16 +189,19 @@ export default async function Home() {
       </section>
 
       {/* PULL QUOTE */}
-      <section className="py-14 px-6" style={{ background: '#2a1f14' }}>
-        <div className="mx-auto text-center">
-          <div className="w-[32px] h-px mx-auto mb-6" style={{ background: '#9c7a52', opacity: 0.6 }} />
+      <section className="py-10 px-6 flex justify-center" style={{ background: '#f0ead8' }}>
+        <div
+          className="text-center px-10 py-8"
+          style={{ background: '#2a1f14', display: 'inline-block' }}
+        >
+          <div className="w-[32px] h-px mx-auto mb-5" style={{ background: '#9c7a52', opacity: 0.6 }} />
           <blockquote
             className="font-playfair italic whitespace-nowrap"
-            style={{ fontSize: 'clamp(16px, 2.2vw, 28px)', color: '#f0ead8' }}
+            style={{ fontSize: 'clamp(14px, 2vw, 26px)', color: '#f0ead8' }}
           >
             "Algunas camisetas cargan la historia en la espalda."
           </blockquote>
-          <div className="w-[32px] h-px mx-auto mt-6" style={{ background: '#9c7a52', opacity: 0.6 }} />
+          <div className="w-[32px] h-px mx-auto mt-5" style={{ background: '#9c7a52', opacity: 0.6 }} />
         </div>
       </section>
     </>

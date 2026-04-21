@@ -54,13 +54,13 @@ export default function ContactoPage() {
               Instagram
             </p>
             <a
-              href="https://instagram.com/kithaus"
+              href="https://instagram.com/kithaus.us"
               target="_blank"
               rel="noopener noreferrer"
               className="font-playfair text-xl"
               style={{ color: '#2a1f14' }}
             >
-              @kithaus
+              @kithaus.us
             </a>
             <p className="font-cormorant text-base mt-1" style={{ color: '#9c8a72' }}>
               Seguinos para ver los últimos lanzamientos y novedades.

@@ -1,34 +1,32 @@
-import Link from 'next/link'
-
 export default function Footer() {
   return (
-    <footer style={{ background: '#0f0c08', color: '#f0ead8', borderTop: '1px solid rgba(156,122,82,0.2)' }}>
-      <div className="max-w-screen-xl mx-auto px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-3">
+    <footer style={{ background: '#2a1f14', borderTop: '1px solid rgba(156,122,82,0.2)' }}>
+      <div className="max-w-screen-xl mx-auto px-6 py-4 flex flex-col items-center gap-3 md:flex-row md:justify-between">
         {/* Nombre */}
         <span
           className="font-playfair font-bold text-sm"
-          style={{ letterSpacing: '3px' }}
+          style={{ letterSpacing: '3px', color: '#f0ead8' }}
         >
           KIT<em className="font-normal italic">HAUS</em>
         </span>
 
-        {/* Redes */}
-        <div className="flex items-center gap-6">
+        {/* Redes — centradas */}
+        <div className="flex items-center justify-center gap-6">
           <a
-            href="https://instagram.com/kithaus"
+            href="https://instagram.com/kithaus.us"
             target="_blank"
             rel="noopener noreferrer"
-            className="font-cormorant text-xs uppercase transition-colors"
-            style={{ letterSpacing: '2px', color: 'rgba(240,234,216,0.5)' }}
+            className="font-cormorant text-xs uppercase"
+            style={{ letterSpacing: '2px', color: 'rgba(240,234,216,0.55)' }}
           >
             Instagram
           </a>
           <a
-            href="https://facebook.com/kithaus"
+            href="https://www.facebook.com/profile.php?id=61572074860834"
             target="_blank"
             rel="noopener noreferrer"
-            className="font-cormorant text-xs uppercase transition-colors"
-            style={{ letterSpacing: '2px', color: 'rgba(240,234,216,0.5)' }}
+            className="font-cormorant text-xs uppercase"
+            style={{ letterSpacing: '2px', color: 'rgba(240,234,216,0.55)' }}
           >
             Facebook
           </a>
@@ -36,8 +34,8 @@ export default function Footer() {
             href="https://wa.me/13053705703"
             target="_blank"
             rel="noopener noreferrer"
-            className="font-cormorant text-xs uppercase transition-colors"
-            style={{ letterSpacing: '2px', color: 'rgba(240,234,216,0.5)' }}
+            className="font-cormorant text-xs uppercase"
+            style={{ letterSpacing: '2px', color: 'rgba(240,234,216,0.55)' }}
           >
             WhatsApp
           </a>
