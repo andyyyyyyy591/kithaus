@@ -3,19 +3,24 @@ export const revalidate = 0
 import { createPublicClient } from '@/lib/supabase-server'
 import ProductCard from '@/components/ProductCard'
 import Masthead from '@/components/Masthead'
+import TiendaFilters from './TiendaFilters'
 import type { Product } from '@/lib/types'
 
 interface Props {
-  searchParams: Promise<{ orden?: string }>
+  searchParams: Promise<{ orden?: string; q?: string }>
 }
 
-async function getProducts(orden: string): Promise<Product[]> {
+async function getProducts(orden: string, q: string): Promise<Product[]> {
   try {
     const supabase = createPublicClient()
     let query = supabase
       .from('products')
       .select('*, collections(*), product_images(*)')
       .eq('active', true)
+
+    if (q) {
+      query = query.ilike('name', `%${q}%`)
+    }
 
     if (orden === 'precio') {
       query = query.order('price', { ascending: true })
@@ -33,8 +38,8 @@ async function getProducts(orden: string): Promise<Product[]> {
 }
 
 export default async function TiendaPage({ searchParams }: Props) {
-  const { orden = 'destacados' } = await searchParams
-  const products = await getProducts(orden)
+  const { orden = 'destacados', q = '' } = await searchParams
+  const products = await getProducts(orden, q)
 
   return (
     <>
@@ -46,39 +51,11 @@ export default async function TiendaPage({ searchParams }: Props) {
       />
 
       <div className="max-w-screen-xl mx-auto px-6 py-12">
-        {/* Sort */}
-        <div className="flex justify-end mb-8">
-          <div className="flex items-center gap-2">
-            <span
-              className="font-cormorant text-[11px] uppercase"
-              style={{ letterSpacing: '3px', color: '#9c8a72' }}
-            >
-              Ordenar:
-            </span>
-            {[
-              { value: 'destacados', label: 'Destacados' },
-              { value: 'recientes', label: 'Más recientes' },
-              { value: 'precio', label: 'Precio' },
-            ].map((opt) => (
-              <a
-                key={opt.value}
-                href={`/tienda?orden=${opt.value}`}
-                className="font-cormorant text-[11px] uppercase px-3 py-1 border-b transition-colors"
-                style={{
-                  letterSpacing: '2px',
-                  color: orden === opt.value ? '#2a1f14' : '#9c8a72',
-                  borderColor: orden === opt.value ? '#2a1f14' : 'transparent',
-                }}
-              >
-                {opt.label}
-              </a>
-            ))}
-          </div>
-        </div>
+        <TiendaFilters orden={orden} q={q} />
 
         {products.length === 0 ? (
           <p className="font-cormorant italic text-center py-24 text-lg" style={{ color: '#9c8a72' }}>
-            Próximamente...
+            {q ? `Sin resultados para "${q}"` : 'Próximamente...'}
           </p>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8">
