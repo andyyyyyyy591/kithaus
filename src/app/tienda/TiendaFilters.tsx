@@ -1,7 +1,7 @@
 'use client'
 
-import { useRouter, usePathname } from 'next/navigation'
-import { useState, useTransition } from 'react'
+import { useRef } from 'react'
+import { useRouter } from 'next/navigation'
 
 const SORT_OPTIONS = [
   { value: 'destacados', label: 'Destacados' },
@@ -11,22 +11,19 @@ const SORT_OPTIONS = [
 
 export default function TiendaFilters({ orden, q }: { orden: string; q: string }) {
   const router = useRouter()
-  const pathname = usePathname()
-  const [search, setSearch] = useState(q)
-  const [, startTransition] = useTransition()
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  function buildUrl(newOrden: string, newQ: string) {
+  function go(newOrden: string, newQ: string) {
     const params = new URLSearchParams()
     if (newOrden !== 'destacados') params.set('orden', newOrden)
     if (newQ) params.set('q', newQ)
-    return `${pathname}${params.toString() ? `?${params}` : ''}`
+    const url = `/tienda${params.toString() ? `?${params}` : ''}`
+    router.push(url)
   }
 
   function handleSearch(val: string) {
-    setSearch(val)
-    startTransition(() => {
-      router.replace(buildUrl(orden, val))
-    })
+    if (timer.current) clearTimeout(timer.current)
+    timer.current = setTimeout(() => go(orden, val), 350)
   }
 
   return (
@@ -34,15 +31,18 @@ export default function TiendaFilters({ orden, q }: { orden: string; q: string }
 
       {/* Buscador */}
       <div className="relative w-full sm:w-64">
-        <span className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: '#9c8a72' }}>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+        <span
+          className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"
+          style={{ color: '#9c8a72' }}
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
             <circle cx="11" cy="11" r="8" />
-            <path d="m21 21-4.35-4.35" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
           </svg>
         </span>
         <input
           type="search"
-          value={search}
+          defaultValue={q}
           onChange={e => handleSearch(e.target.value)}
           placeholder="Buscar camiseta…"
           className="w-full font-cormorant text-base pl-9 pr-4 py-2 border outline-none"
@@ -52,13 +52,16 @@ export default function TiendaFilters({ orden, q }: { orden: string; q: string }
 
       {/* Ordenar */}
       <div className="flex items-center gap-2 flex-shrink-0">
-        <span className="font-cormorant text-[11px] uppercase" style={{ letterSpacing: '3px', color: '#9c8a72' }}>
+        <span
+          className="font-cormorant text-[11px] uppercase"
+          style={{ letterSpacing: '3px', color: '#9c8a72' }}
+        >
           Ordenar:
         </span>
         {SORT_OPTIONS.map(opt => (
-          <a
+          <button
             key={opt.value}
-            href={buildUrl(opt.value, search)}
+            onClick={() => go(opt.value, q)}
             className="font-cormorant text-[11px] uppercase px-3 py-1 border-b transition-colors"
             style={{
               letterSpacing: '2px',
@@ -67,7 +70,7 @@ export default function TiendaFilters({ orden, q }: { orden: string; q: string }
             }}
           >
             {opt.label}
-          </a>
+          </button>
         ))}
       </div>
     </div>
