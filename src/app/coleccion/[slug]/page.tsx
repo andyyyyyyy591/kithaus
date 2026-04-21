@@ -2,16 +2,17 @@ import { createPublicClient } from '@/lib/supabase-server'
 import { notFound } from 'next/navigation'
 import ProductCard from '@/components/ProductCard'
 import Masthead from '@/components/Masthead'
+import ColeccionFilters from './ColeccionFilters'
 import type { Product, Collection } from '@/lib/types'
 
 interface Props {
   params: Promise<{ slug: string }>
-  searchParams: Promise<{ orden?: string }>
+  searchParams: Promise<{ orden?: string; q?: string }>
 }
 
 export default async function ColeccionPage({ params, searchParams }: Props) {
   const { slug } = await params
-  const { orden = 'destacados' } = await searchParams
+  const { orden = 'destacados', q = '' } = await searchParams
 
   let collection: Collection | null = null
   let products: Product[] = []
@@ -34,6 +35,8 @@ export default async function ColeccionPage({ params, searchParams }: Props) {
       .select('*, collections(*), product_images(*)')
       .eq('active', true)
       .or(`collection_id.eq.${collection.id},extra_collection_ids.cs.{"${collection.id}"}`)
+
+    if (q) query = query.ilike('name', `%${q}%`)
 
     if (orden === 'precio') {
       query = query.order('price', { ascending: true })
@@ -59,31 +62,7 @@ export default async function ColeccionPage({ params, searchParams }: Props) {
       />
 
       <div className="max-w-screen-xl mx-auto px-6 py-12">
-        <div className="flex justify-end mb-8">
-          <div className="flex items-center gap-2">
-            <span className="font-cormorant text-[11px] uppercase" style={{ letterSpacing: '3px', color: '#9c8a72' }}>
-              Ordenar:
-            </span>
-            {[
-              { value: 'destacados', label: 'Destacados' },
-              { value: 'recientes', label: 'Más recientes' },
-              { value: 'precio', label: 'Precio' },
-            ].map((opt) => (
-              <a
-                key={opt.value}
-                href={`/coleccion/${slug}?orden=${opt.value}`}
-                className="font-cormorant text-[11px] uppercase px-3 py-1 border-b transition-colors"
-                style={{
-                  letterSpacing: '2px',
-                  color: orden === opt.value ? '#2a1f14' : '#9c8a72',
-                  borderColor: orden === opt.value ? '#2a1f14' : 'transparent',
-                }}
-              >
-                {opt.label}
-              </a>
-            ))}
-          </div>
-        </div>
+        <ColeccionFilters slug={slug} orden={orden} q={q} />
 
         {products.length === 0 ? (
           <p className="font-cormorant italic text-center py-24 text-lg" style={{ color: '#9c8a72' }}>
