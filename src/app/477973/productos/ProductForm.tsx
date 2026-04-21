@@ -99,15 +99,20 @@ export default function ProductForm({ collections, product }: Props) {
       const { error } = await supabase.from('products').update(payload).eq('id', product.id)
       err = error
     } else {
-      const { error } = await supabase.from('products').insert(payload)
+      const { data: newProduct, error } = await supabase.from('products').insert(payload).select('id').single()
       err = error
+      if (!err && newProduct) {
+        router.push(`/477973/productos/${newProduct.id}/editar`)
+        router.refresh()
+        return
+      }
     }
 
     if (err) {
       setError(err.message)
       setSaving(false)
     } else {
-      router.push('/admin/productos')
+      router.push('/477973/productos')
       router.refresh()
     }
   }
@@ -310,7 +315,7 @@ export default function ProductForm({ collections, product }: Props) {
           {saving ? 'Guardando…' : 'Guardar'}
         </button>
         <a
-          href="/admin/productos"
+          href="/477973/productos"
           className="font-cormorant text-sm uppercase px-8 py-3 border transition-colors"
           style={{ letterSpacing: '2px', borderColor: 'rgba(42,31,20,0.2)', color: '#9c8a72' }}
         >

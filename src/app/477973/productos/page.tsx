@@ -41,7 +41,7 @@ export default async function ProductosAdminPage({ searchParams }: Props) {
             </h1>
           </div>
           <Link
-            href="/admin/productos/nuevo"
+            href="/477973/productos/nuevo"
             className="font-cormorant text-sm uppercase px-6 py-3 transition-colors"
             style={{ letterSpacing: '2px', background: '#2a1f14', color: '#f0ead8' }}
           >
@@ -120,7 +120,7 @@ export default async function ProductosAdminPage({ searchParams }: Props) {
                     {p.active ? 'Activo' : 'Oculto'}
                   </span>
                   <Link
-                    href={`/admin/productos/${p.id}/editar`}
+                    href={`/477973/productos/${p.id}/editar`}
                     className="font-cormorant text-[11px] uppercase border-b"
                     style={{ letterSpacing: '2px', color: '#9c7a52', borderColor: '#9c7a52' }}
                   >

@@ -6,10 +6,10 @@ import { useState } from 'react'
 import { createClient } from '@/lib/supabase'
 
 const navItems = [
-  { href: '/admin/dashboard', label: 'Inicio' },
-  { href: '/admin/productos', label: 'Productos' },
-  { href: '/admin/colecciones', label: 'Colecciones' },
-  { href: '/admin/configuracion', label: 'Configuración' },
+  { href: '/477973/dashboard', label: 'Inicio' },
+  { href: '/477973/productos', label: 'Productos' },
+  { href: '/477973/colecciones', label: 'Colecciones' },
+  { href: '/477973/configuracion', label: 'Configuración' },
 ]
 
 export default function AdminShell({ children }: { children: React.ReactNode }) {
@@ -20,7 +20,7 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
   async function handleLogout() {
     const supabase = createClient()
     await supabase.auth.signOut()
-    router.push('/admin/login')
+    router.push('/477973/login')
     router.refresh()
   }
 

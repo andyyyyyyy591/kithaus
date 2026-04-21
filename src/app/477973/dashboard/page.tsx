@@ -29,8 +29,8 @@ export default async function DashboardPage() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-12">
           {[
-            { label: 'Productos', count: stats.products, href: '/admin/productos' },
-            { label: 'Colecciones', count: stats.collections, href: '/admin/colecciones' },
+            { label: 'Productos', count: stats.products, href: '/477973/productos' },
+            { label: 'Colecciones', count: stats.collections, href: '/477973/colecciones' },
           ].map((item) => (
             <Link
               key={item.href}
@@ -63,14 +63,14 @@ export default async function DashboardPage() {
           </p>
           <div className="flex gap-4 mt-4">
             <Link
-              href="/admin/productos/nuevo"
+              href="/477973/productos/nuevo"
               className="font-cormorant text-sm uppercase px-6 py-3 transition-colors"
               style={{ letterSpacing: '2px', background: '#2a1f14', color: '#f0ead8' }}
             >
               + Nuevo producto
             </Link>
             <Link
-              href="/admin/colecciones"
+              href="/477973/colecciones"
               className="font-cormorant text-sm uppercase px-6 py-3 border transition-colors"
               style={{ letterSpacing: '2px', borderColor: 'rgba(42,31,20,0.2)', color: '#2a1f14' }}
             >

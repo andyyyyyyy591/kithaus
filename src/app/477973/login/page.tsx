@@ -23,7 +23,7 @@ export default function LoginPage() {
       setError('Credenciales incorrectas')
       setLoading(false)
     } else {
-      router.push('/admin/dashboard')
+      router.push('/477973/dashboard')
       router.refresh()
     }
   }

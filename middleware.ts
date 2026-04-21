@@ -2,8 +2,8 @@ import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
 export async function middleware(request: NextRequest) {
-  const isAdminRoute = request.nextUrl.pathname.startsWith('/admin')
-  const isLoginPage = request.nextUrl.pathname === '/admin/login'
+  const isAdminRoute = request.nextUrl.pathname.startsWith('/477973')
+  const isLoginPage = request.nextUrl.pathname === '/477973/login'
 
   if (!isAdminRoute) return NextResponse.next({ request })
 
@@ -35,7 +35,7 @@ export async function middleware(request: NextRequest) {
     const isRealUser = !!user?.email
 
     if (!isLoginPage && !isRealUser) {
-      return NextResponse.redirect(new URL('/admin/login', request.url))
+      return NextResponse.redirect(new URL('/477973/login', request.url))
     }
 
     // Verificar que el email esté en la lista de admins autorizados
@@ -44,24 +44,24 @@ export async function middleware(request: NextRequest) {
       const userEmail = (user!.email ?? '').toLowerCase()
       if (allowedEmails.length > 0 && allowedEmails[0] !== '' && !allowedEmails.includes(userEmail)) {
         await supabase.auth.signOut()
-        return NextResponse.redirect(new URL('/admin/login', request.url))
+        return NextResponse.redirect(new URL('/477973/login', request.url))
       }
     }
 
     if (isLoginPage && isRealUser) {
-      return NextResponse.redirect(new URL('/admin/dashboard', request.url))
+      return NextResponse.redirect(new URL('/477973/dashboard', request.url))
     }
 
     return supabaseResponse
   } catch {
     // Si Supabase falla, bloquear acceso al admin
     if (!isLoginPage) {
-      return NextResponse.redirect(new URL('/admin/login', request.url))
+      return NextResponse.redirect(new URL('/477973/login', request.url))
     }
     return NextResponse.next({ request })
   }
 }
 
 export const config = {
-  matcher: ['/admin', '/admin/:path*'],
+  matcher: ['/477973', '/477973/:path*'],
 }
