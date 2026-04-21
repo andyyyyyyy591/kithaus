@@ -58,11 +58,13 @@ export default async function Home() {
           className="object-cover object-top"
           style={{ filter: 'saturate(0.85) contrast(1.05)' }}
         />
+        {/* Overlay base */}
+        <div className="absolute inset-0" style={{ background: 'rgba(42,31,20,0.35)' }} />
         {/* Gradient overlay */}
         <div
           className="absolute inset-0"
           style={{
-            background: 'linear-gradient(to bottom, rgba(42,31,20,0.45) 0%, transparent 35%, rgba(42,31,20,0.75) 100%)',
+            background: 'linear-gradient(to bottom, rgba(42,31,20,0.3) 0%, transparent 30%, rgba(42,31,20,0.55) 100%)',
           }}
         />
         {/* Text overlay centrado */}
@@ -187,16 +189,16 @@ export default async function Home() {
       </section>
 
       {/* PULL QUOTE */}
-      <section className="py-20 px-6" style={{ background: '#2a1f14' }}>
-        <div className="max-w-2xl mx-auto text-center">
-          <div className="w-[60px] h-px mx-auto mb-8" style={{ background: '#9c7a52' }} />
+      <section className="py-14 px-6" style={{ background: '#2a1f14' }}>
+        <div className="mx-auto text-center">
+          <div className="w-[32px] h-px mx-auto mb-6" style={{ background: '#9c7a52', opacity: 0.6 }} />
           <blockquote
-            className="font-playfair italic leading-relaxed"
-            style={{ fontSize: 'clamp(22px, 3vw, 34px)', color: '#f0ead8' }}
+            className="font-playfair italic whitespace-nowrap"
+            style={{ fontSize: 'clamp(16px, 2.2vw, 28px)', color: '#f0ead8' }}
           >
             "Algunas camisetas cargan la historia en la espalda."
           </blockquote>
-          <div className="w-[60px] h-px mx-auto mt-8" style={{ background: '#9c7a52' }} />
+          <div className="w-[32px] h-px mx-auto mt-6" style={{ background: '#9c7a52', opacity: 0.6 }} />
         </div>
       </section>
     </>
