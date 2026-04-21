@@ -189,20 +189,15 @@ export default async function Home() {
       </section>
 
       {/* PULL QUOTE */}
-      <section className="py-10 px-6 flex justify-center" style={{ background: '#f0ead8' }}>
-        <div
-          className="text-center px-10 py-8"
-          style={{ background: '#2a1f14', display: 'inline-block' }}
+      <section className="py-12 px-6 text-center" style={{ background: '#f0ead8' }}>
+        <div className="w-[32px] h-px mx-auto mb-5" style={{ background: '#9c7a52', opacity: 0.6 }} />
+        <blockquote
+          className="font-playfair italic whitespace-nowrap"
+          style={{ fontSize: 'clamp(14px, 2vw, 26px)', color: '#2a1f14' }}
         >
-          <div className="w-[32px] h-px mx-auto mb-5" style={{ background: '#9c7a52', opacity: 0.6 }} />
-          <blockquote
-            className="font-playfair italic whitespace-nowrap"
-            style={{ fontSize: 'clamp(14px, 2vw, 26px)', color: '#f0ead8' }}
-          >
-            "Algunas camisetas cargan la historia en la espalda."
-          </blockquote>
-          <div className="w-[32px] h-px mx-auto mt-5" style={{ background: '#9c7a52', opacity: 0.6 }} />
-        </div>
+          "Algunas camisetas cargan la historia en la espalda."
+        </blockquote>
+        <div className="w-[32px] h-px mx-auto mt-5" style={{ background: '#9c7a52', opacity: 0.6 }} />
       </section>
     </>
   )
