@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase-server'
+import { createPublicClient } from '@/lib/supabase-server'
 import { notFound } from 'next/navigation'
 import Image from 'next/image'
 import ProductCard from '@/components/ProductCard'
@@ -17,7 +17,7 @@ export default async function ProductoPage({ params }: Props) {
   let related: Product[] = []
 
   try {
-    const supabase = await createClient()
+    const supabase = createPublicClient()
 
     const { data } = await supabase
       .from('products')

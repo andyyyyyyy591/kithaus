@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase-server'
+import { createPublicClient } from '@/lib/supabase-server'
 import { notFound } from 'next/navigation'
 import ProductCard from '@/components/ProductCard'
 import Masthead from '@/components/Masthead'
@@ -17,7 +17,7 @@ export default async function ColeccionPage({ params, searchParams }: Props) {
   let products: Product[] = []
 
   try {
-    const supabase = await createClient()
+    const supabase = createPublicClient()
 
     const { data: col } = await supabase
       .from('collections')

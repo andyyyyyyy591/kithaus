@@ -1,13 +1,13 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { createClient } from '@/lib/supabase-server'
+import { createPublicClient } from '@/lib/supabase-server'
 import ProductCard from '@/components/ProductCard'
 import DecoRule from '@/components/DecoRule'
 import type { Product, Collection } from '@/lib/types'
 
 async function getFeaturedProducts(): Promise<Product[]> {
   try {
-    const supabase = await createClient()
+    const supabase = createPublicClient()
     const { data } = await supabase
       .from('products')
       .select('*, collections(*), product_images(*)')
@@ -23,7 +23,7 @@ async function getFeaturedProducts(): Promise<Product[]> {
 
 async function getCollections(): Promise<Collection[]> {
   try {
-    const supabase = await createClient()
+    const supabase = createPublicClient()
     const { data } = await supabase
       .from('collections')
       .select('*')

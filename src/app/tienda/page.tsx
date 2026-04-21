@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase-server'
+import { createPublicClient } from '@/lib/supabase-server'
 import ProductCard from '@/components/ProductCard'
 import Masthead from '@/components/Masthead'
 import type { Product } from '@/lib/types'
@@ -9,7 +9,7 @@ interface Props {
 
 async function getProducts(orden: string): Promise<Product[]> {
   try {
-    const supabase = await createClient()
+    const supabase = createPublicClient()
     let query = supabase
       .from('products')
       .select('*, collections(*), product_images(*)')
