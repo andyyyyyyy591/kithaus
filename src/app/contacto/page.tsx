@@ -77,11 +77,11 @@ export default function ContactoPage() {
               Email
             </p>
             <a
-              href="mailto:hola@kithaus.com"
+              href="mailto:kithau.us@gmail.com"
               className="font-playfair text-xl"
               style={{ color: '#2a1f14' }}
             >
-              hola@kithaus.com
+              kithau.us@gmail.com
             </a>
           </div>
 

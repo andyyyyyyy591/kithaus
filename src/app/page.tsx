@@ -48,37 +48,8 @@ export default async function Home() {
 
   return (
     <>
-      {/* MASTHEAD */}
-      <div
-        className="relative overflow-hidden text-center py-16 md:py-24"
-        style={{ background: '#2a1f14', color: '#f0ead8' }}
-      >
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            background: `repeating-linear-gradient(0deg, transparent, transparent 40px, rgba(240,234,216,0.03) 40px, rgba(240,234,216,0.03) 41px)`,
-          }}
-        />
-        <div className="relative z-10 px-6">
-          <div className="w-[60px] h-px mx-auto mb-5" style={{ background: '#9c7a52' }} />
-          <p className="font-cormorant text-[11px] uppercase mb-4" style={{ letterSpacing: '5px', color: '#9c7a52' }}>
-            Colección 2026
-          </p>
-          <h1
-            className="font-playfair font-bold leading-none mb-5"
-            style={{ fontSize: 'clamp(56px, 8vw, 96px)', letterSpacing: '-1px', lineHeight: 0.95 }}
-          >
-            KIT<em className="font-normal italic">HAUS</em>
-          </h1>
-          <p className="font-cormorant italic text-base" style={{ letterSpacing: '2px', color: 'rgba(240,234,216,0.5)' }}>
-            El fútbol como cultura. La camiseta como identidad.
-          </p>
-          <div className="w-[60px] h-px mx-auto mt-5" style={{ background: '#9c7a52' }} />
-        </div>
-      </div>
-
       {/* HERO — Diego México 86 */}
-      <div className="relative w-full" style={{ height: '90vh', minHeight: 500 }}>
+      <div className="relative w-full" style={{ height: '100vh', minHeight: 600 }}>
         <Image
           src="/hero/diego-mexico86.jpg"
           alt="Diego Maradona — México 1986"
@@ -91,24 +62,25 @@ export default async function Home() {
         <div
           className="absolute inset-0"
           style={{
-            background: 'linear-gradient(to bottom, transparent 40%, rgba(42,31,20,0.85) 100%)',
+            background: 'linear-gradient(to bottom, rgba(42,31,20,0.45) 0%, transparent 35%, rgba(42,31,20,0.75) 100%)',
           }}
         />
-        {/* Text overlay */}
-        <div className="absolute bottom-0 left-0 p-8 md:p-16 max-w-lg">
-          <p
-            className="font-cormorant text-[11px] uppercase mb-3"
-            style={{ letterSpacing: '5px', color: '#9c7a52' }}
-          >
-            México · 1986
+        {/* Text overlay centrado */}
+        <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
+          <div className="w-[60px] h-px mx-auto mb-5" style={{ background: '#9c7a52' }} />
+          <p className="font-cormorant text-[11px] uppercase mb-4" style={{ letterSpacing: '5px', color: '#9c7a52' }}>
+            Colección 2026
           </p>
-          <h2
-            className="font-playfair font-bold text-white mb-6 leading-tight"
-            style={{ fontSize: 'clamp(28px, 4vw, 48px)' }}
+          <h1
+            className="font-playfair font-bold leading-none mb-5 text-white"
+            style={{ fontSize: 'clamp(56px, 8vw, 96px)', letterSpacing: '-1px', lineHeight: 0.95 }}
           >
-            La camiseta que cambió{' '}
-            <em className="font-normal italic">la historia.</em>
-          </h2>
+            KIT<em className="font-normal italic">HAUS</em>
+          </h1>
+          <p className="font-cormorant italic text-base mb-8" style={{ letterSpacing: '2px', color: 'rgba(240,234,216,0.85)' }}>
+            El fútbol como cultura. La camiseta como identidad.
+          </p>
+          <div className="w-[60px] h-px mx-auto mb-8" style={{ background: '#9c7a52' }} />
           <Link
             href="/tienda"
             className="font-cormorant text-sm uppercase inline-block border-b pb-1 transition-colors duration-200"
