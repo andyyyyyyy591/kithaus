@@ -31,21 +31,24 @@ export async function middleware(request: NextRequest) {
 
     const { data: { user } } = await supabase.auth.getUser()
 
-    if (!isLoginPage && !user) {
+    // Usuario válido = tiene email (los anónimos no tienen)
+    const isRealUser = !!user?.email
+
+    if (!isLoginPage && !isRealUser) {
       return NextResponse.redirect(new URL('/admin/login', request.url))
     }
 
     // Verificar que el email esté en la lista de admins autorizados
-    if (user) {
+    if (isRealUser) {
       const allowedEmails = (process.env.ADMIN_EMAILS ?? '').split(',').map(e => e.trim().toLowerCase())
-      const userEmail = (user.email ?? '').toLowerCase()
+      const userEmail = (user!.email ?? '').toLowerCase()
       if (allowedEmails.length > 0 && allowedEmails[0] !== '' && !allowedEmails.includes(userEmail)) {
         await supabase.auth.signOut()
         return NextResponse.redirect(new URL('/admin/login', request.url))
       }
     }
 
-    if (isLoginPage && user) {
+    if (isLoginPage && isRealUser) {
       return NextResponse.redirect(new URL('/admin/dashboard', request.url))
     }
 
