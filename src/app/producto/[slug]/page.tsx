@@ -4,6 +4,7 @@ import Image from 'next/image'
 import ProductCard from '@/components/ProductCard'
 import DecoRule from '@/components/DecoRule'
 import ProductActions from './ProductActions'
+import ProductGallery from './ProductGallery'
 import type { Product } from '@/lib/types'
 
 interface Props {
@@ -60,42 +61,7 @@ export default async function ProductoPage({ params }: Props) {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
 
         {/* Galería */}
-        <div>
-          {images.length > 0 ? (
-            <>
-              <div className="relative aspect-[3/4] mb-3 overflow-hidden" style={{ background: '#faf7f0' }}>
-                <Image
-                  src={images[0].url}
-                  alt={images[0].alt ?? product!.name}
-                  fill
-                  className="object-cover"
-                  priority
-                />
-              </div>
-              {images.length > 1 && (
-                <div className="grid grid-cols-4 gap-2">
-                  {images.slice(1).map((img) => (
-                    <div key={img.id} className="relative aspect-square overflow-hidden" style={{ background: '#faf7f0' }}>
-                      <Image
-                        src={img.url}
-                        alt={img.alt ?? product!.name}
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                  ))}
-                </div>
-              )}
-            </>
-          ) : (
-            <div
-              className="aspect-[3/4] flex items-center justify-center"
-              style={{ background: '#faf7f0' }}
-            >
-              <span className="font-cormorant italic" style={{ color: '#9c8a72' }}>Sin imagen</span>
-            </div>
-          )}
-        </div>
+        <ProductGallery images={images} name={product!.name} />
 
         {/* Info */}
         <div className="lg:sticky lg:top-24 lg:self-start">

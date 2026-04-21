@@ -16,6 +16,7 @@ export interface Product {
   description: string | null
   price: number
   collection_id: string | null
+  extra_collection_ids: string[]
   sizes_available: string[]
   featured: boolean
   active: boolean

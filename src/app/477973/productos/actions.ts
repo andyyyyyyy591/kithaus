@@ -13,6 +13,7 @@ export async function saveProduct(formData: FormData) {
   const price = parseFloat(formData.get('price') as string)
   const description = formData.get('description') as string
   const sizes = formData.getAll('sizes') as string[]
+  const extraCollectionIds = formData.getAll('extra_collection_ids') as string[]
   const featured = formData.get('featured') === 'true'
   const active = formData.get('active') === 'true'
   const order = parseInt(formData.get('order') as string) || 0
@@ -22,6 +23,7 @@ export async function saveProduct(formData: FormData) {
     name,
     slug,
     collection_id: collectionId || null,
+    extra_collection_ids: extraCollectionIds,
     price,
     description,
     sizes_available: sizes,

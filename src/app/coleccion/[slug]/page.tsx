@@ -33,7 +33,7 @@ export default async function ColeccionPage({ params, searchParams }: Props) {
       .from('products')
       .select('*, collections(*), product_images(*)')
       .eq('active', true)
-      .eq('collection_id', collection.id)
+      .or(`collection_id.eq.${collection.id},extra_collection_ids.cs.{${collection.id}}`)
 
     if (orden === 'precio') {
       query = query.order('price', { ascending: true })

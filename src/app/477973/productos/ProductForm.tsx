@@ -29,6 +29,7 @@ export default function ProductForm({ collections, product }: Props) {
   const [name, setName] = useState(product?.name ?? '')
   const [slug, setSlug] = useState(product?.slug ?? '')
   const [collectionId, setCollectionId] = useState(product?.collection_id ?? '')
+  const [extraCollectionIds, setExtraCollectionIds] = useState<string[]>(product?.extra_collection_ids ?? [])
   const [price, setPrice] = useState(product?.price?.toString() ?? '')
   const [description, setDescription] = useState(product?.description ?? '')
   const [sizes, setSizes] = useState<string[]>(product?.sizes_available ?? ALL_SIZES)
@@ -83,6 +84,7 @@ export default function ProductForm({ collections, product }: Props) {
     formData.append('name', name)
     formData.append('slug', slug)
     formData.append('collection_id', collectionId)
+    extraCollectionIds.forEach(id => formData.append('extra_collection_ids', id))
     formData.append('price', price)
     formData.append('description', description)
     sizes.forEach(s => formData.append('sizes', s))
@@ -120,12 +122,42 @@ export default function ProductForm({ collections, product }: Props) {
       </div>
 
       <div>
-        <label className="block font-cormorant text-[11px] uppercase mb-2" style={{ letterSpacing: '3px', color: '#9c8a72' }}>Colección</label>
-        <select value={collectionId} onChange={e => setCollectionId(e.target.value)}
-          className="w-full font-cormorant text-base px-4 py-3 border outline-none" style={inputStyle}>
-          <option value="">Sin colección</option>
-          {collections.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
-        </select>
+        <label className="block font-cormorant text-[11px] uppercase mb-3" style={{ letterSpacing: '3px', color: '#9c8a72' }}>
+          Colecciones <span style={{ color: '#9c8a72', fontWeight: 'normal' }}>(seleccioná todas las que apliquen)</span>
+        </label>
+        <div className="flex flex-col gap-2">
+          {collections.map(c => {
+            const isPrimary = collectionId === c.id
+            const isExtra = extraCollectionIds.includes(c.id)
+            const isChecked = isPrimary || isExtra
+            return (
+              <label key={c.id} className="flex items-center gap-3 cursor-pointer py-2 px-3 border transition-colors"
+                style={{ borderColor: isChecked ? '#9c7a52' : 'rgba(42,31,20,0.15)', background: isChecked ? 'rgba(156,122,82,0.06)' : 'transparent' }}>
+                <input type="checkbox" checked={isChecked}
+                  onChange={e => {
+                    if (e.target.checked) {
+                      if (!collectionId) {
+                        setCollectionId(c.id)
+                      } else {
+                        setExtraCollectionIds(prev => [...prev.filter(id => id !== c.id), c.id])
+                      }
+                    } else {
+                      if (isPrimary) {
+                        const next = extraCollectionIds[0] ?? ''
+                        setCollectionId(next)
+                        setExtraCollectionIds(prev => prev.filter(id => id !== next))
+                      } else {
+                        setExtraCollectionIds(prev => prev.filter(id => id !== c.id))
+                      }
+                    }
+                  }}
+                  className="w-4 h-4" />
+                <span className="font-cormorant text-base" style={{ color: '#2a1f14' }}>{c.name}</span>
+                {isPrimary && <span className="font-cormorant text-[10px] uppercase ml-auto" style={{ letterSpacing: '2px', color: '#9c7a52' }}>Principal</span>}
+              </label>
+            )
+          })}
+        </div>
       </div>
 
       <div>

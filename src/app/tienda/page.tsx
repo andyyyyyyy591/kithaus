@@ -1,3 +1,5 @@
+export const revalidate = 0
+
 import { createPublicClient } from '@/lib/supabase-server'
 import ProductCard from '@/components/ProductCard'
 import Masthead from '@/components/Masthead'
