@@ -34,7 +34,7 @@ export default async function ColeccionPage({ params, searchParams }: Props) {
       .from('products')
       .select('*, collections(*), product_images(*)')
       .eq('active', true)
-      .or(`collection_id.eq.${collection.id},extra_collection_ids.cs.{"${collection.id}"}`)
+      .or(`collection_id.eq.${collection.id},extra_collection_ids.cs.{${collection.id}}`)
 
     if (q) query = query.ilike('name', `%${q}%`)
 

@@ -46,36 +46,41 @@ export async function saveProduct(formData: FormData) {
     productId = data.id
   }
 
-  // Subir imágenes nuevas
+  // Subir imágenes nuevas en paralelo
   const validImages = images.filter(f => f instanceof File && f.size > 0)
-  for (const file of validImages) {
-    const ext = file.name.split('.').pop()
-    const path = `products/${productId}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
-    const buffer = Buffer.from(await file.arrayBuffer())
-
-    const { data: uploaded, error: uploadError } = await supabase.storage
-      .from('products')
-      .upload(path, buffer, { contentType: file.type })
-
-    if (uploadError) continue
-
-    const { data: urlData } = supabase.storage.from('products').getPublicUrl(uploaded.path)
-
-    // La primera imagen es la principal si no hay ninguna todavía
-    const { count } = await supabase
+  if (validImages.length > 0) {
+    const { count: existingCount } = await supabase
       .from('product_images')
       .select('*', { count: 'exact', head: true })
       .eq('product_id', productId)
 
-    await supabase.from('product_images').insert({
-      product_id: productId,
-      url: urlData.publicUrl,
-      is_primary: (count ?? 0) === 0,
-      order: count ?? 0,
-    })
+    const baseCount = existingCount ?? 0
+
+    await Promise.all(validImages.map(async (file, i) => {
+      const ext = file.name.split('.').pop()
+      const path = `products/${productId}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
+      const buffer = Buffer.from(await file.arrayBuffer())
+
+      const { data: uploaded, error: uploadError } = await supabase.storage
+        .from('products')
+        .upload(path, buffer, { contentType: file.type })
+
+      if (uploadError) return
+
+      const { data: urlData } = supabase.storage.from('products').getPublicUrl(uploaded.path)
+
+      await supabase.from('product_images').insert({
+        product_id: productId,
+        url: urlData.publicUrl,
+        is_primary: baseCount === 0 && i === 0,
+        order: baseCount + i,
+      })
+    }))
   }
 
   revalidatePath('/477973/productos')
+  revalidatePath('/tienda')
+  revalidatePath('/', 'layout')
   return { productId }
 }
 
@@ -85,6 +90,8 @@ export async function deleteImage(imageId: string, storagePath: string) {
   const { error } = await supabase.from('product_images').delete().eq('id', imageId)
   if (error) return { error: error.message }
   revalidatePath('/477973/productos')
+  revalidatePath('/tienda')
+  revalidatePath('/', 'layout')
   return { ok: true }
 }
 
@@ -93,5 +100,7 @@ export async function setPrimaryImage(imageId: string, productId: string) {
   await supabase.from('product_images').update({ is_primary: false }).eq('product_id', productId)
   await supabase.from('product_images').update({ is_primary: true }).eq('id', imageId)
   revalidatePath('/477973/productos')
+  revalidatePath('/tienda')
+  revalidatePath('/', 'layout')
   return { ok: true }
 }
