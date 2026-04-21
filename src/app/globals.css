@@ -1,0 +1,51 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --negro-tabaco: #0f0c08;
+  --marron-oscuro: #2a1f14;
+  --marron-medio: #5c3d1e;
+  --marron-claro: #9c7a52;
+  --crema: #f0ead8;
+  --blanco-calido: #faf7f0;
+  --muted: #9c8a72;
+  --border: rgba(42, 31, 20, 0.15);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--crema);
+  color: var(--marron-oscuro);
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 300;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+
+.font-playfair {
+  font-family: 'Playfair Display', serif;
+}
+
+.font-cormorant {
+  font-family: 'Cormorant Garamond', serif;
+}
+
+@layer utilities {
+  .eyebrow {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 11px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--marron-claro);
+  }
+}
