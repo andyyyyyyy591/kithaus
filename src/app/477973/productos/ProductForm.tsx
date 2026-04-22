@@ -3,8 +3,7 @@
 import { useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
-import { saveProduct, recordImage, deleteImage, setPrimaryImage } from './actions'
-import { createBrowserSupabaseClient } from '@/lib/supabase-browser'
+import { saveProduct, getSignedUploadUrl, recordImage, deleteImage, setPrimaryImage } from './actions'
 import type { Collection, Product } from '@/lib/types'
 
 const ALL_SIZES = ['XS', 'S', 'M', 'L', 'XL', 'XXL', '3XL']
@@ -105,32 +104,32 @@ export default function ProductForm({ collections, product }: Props) {
 
       const productId = result.productId!
 
-      // 2. Subir fotos directo al storage de Supabase (sin pasar por el servidor)
+      // 2. Subir fotos directo a Supabase via signed URLs (sin pasar por Vercel)
       if (newFiles.length > 0) {
-        const supabase = createBrowserSupabaseClient()
-
-        // Contar imágenes existentes para saber el order y is_primary
-        const { count: existingCount } = await supabase
-          .from('product_images')
-          .select('*', { count: 'exact', head: true })
-          .eq('product_id', productId)
-
-        const baseCount = existingCount ?? 0
+        // Contar imágenes existentes
+        const countRes = await fetch(
+          `${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/product_images?product_id=eq.${productId}&select=id`,
+          { headers: { apikey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!, 'Prefer': 'count=exact' } }
+        )
+        const baseCount = parseInt(countRes.headers.get('content-range')?.split('/')[1] ?? '0') || 0
 
         for (let i = 0; i < newFiles.length; i++) {
           const file = newFiles[i]
-          const ext = file.name.split('.').pop()
-          const path = `products/${productId}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
 
-          const { data: uploaded, error: uploadError } = await supabase.storage
-            .from('products')
-            .upload(path, file, { contentType: file.type })
+          // Pedir URL firmada al servidor (usa service role, seguro)
+          const urlRes = await getSignedUploadUrl(productId, file.name)
+          if ('error' in urlRes) continue
 
-          if (uploadError) continue
+          // Subir directo a Supabase desde el browser
+          const uploadRes = await fetch(urlRes.signedUrl, {
+            method: 'PUT',
+            body: file,
+            headers: { 'Content-Type': file.type },
+          })
+          if (!uploadRes.ok) continue
 
-          const { data: urlData } = supabase.storage.from('products').getPublicUrl(uploaded.path)
-
-          await recordImage(productId, urlData.publicUrl, baseCount === 0 && i === 0, baseCount + i)
+          // Registrar URL en la base de datos
+          await recordImage(productId, urlRes.path, baseCount === 0 && i === 0, baseCount + i)
         }
       }
 

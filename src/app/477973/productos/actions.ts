@@ -83,12 +83,26 @@ export async function saveProduct(formData: FormData) {
   }
 }
 
-export async function recordImage(productId: string, url: string, isPrimary: boolean, order: number) {
+export async function getSignedUploadUrl(productId: string, filename: string) {
   try {
     const supabase = createAdminClient()
+    const ext = filename.split('.').pop()
+    const path = `products/${productId}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
+    const { data, error } = await supabase.storage.from('products').createSignedUploadUrl(path)
+    if (error) return { error: error.message }
+    return { signedUrl: data.signedUrl, path: data.path }
+  } catch (e) {
+    return { error: e instanceof Error ? e.message : 'Error generando URL' }
+  }
+}
+
+export async function recordImage(productId: string, storagePath: string, isPrimary: boolean, order: number) {
+  try {
+    const supabase = createAdminClient()
+    const { data: urlData } = supabase.storage.from('products').getPublicUrl(storagePath)
     const { error } = await supabase.from('product_images').insert({
       product_id: productId,
-      url,
+      url: urlData.publicUrl,
       is_primary: isPrimary,
       order,
     })
