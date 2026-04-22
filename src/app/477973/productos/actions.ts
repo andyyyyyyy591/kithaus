@@ -18,7 +18,6 @@ export async function saveProduct(formData: FormData) {
     const featured = formData.get('featured') === 'true'
     const active = formData.get('active') === 'true'
     const order = parseInt(formData.get('order') as string) || 0
-    const images = formData.getAll('images') as File[]
 
     // Payload base sin extra_collection_ids (por si la columna no existe aún)
     const basePayload = {
@@ -75,44 +74,31 @@ export async function saveProduct(formData: FormData) {
       }
     }
 
-    // Subir imágenes nuevas en paralelo
-    const validImages = images.filter(f => f instanceof File && f.size > 0)
-    if (validImages.length > 0) {
-      const { count: existingCount } = await supabase
-        .from('product_images')
-        .select('*', { count: 'exact', head: true })
-        .eq('product_id', productId)
-
-      const baseCount = existingCount ?? 0
-
-      await Promise.all(validImages.map(async (file, i) => {
-        const ext = file.name.split('.').pop()
-        const path = `products/${productId}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
-        const buffer = Buffer.from(await file.arrayBuffer())
-
-        const { data: uploaded, error: uploadError } = await supabase.storage
-          .from('products')
-          .upload(path, buffer, { contentType: file.type })
-
-        if (uploadError) return
-
-        const { data: urlData } = supabase.storage.from('products').getPublicUrl(uploaded.path)
-
-        await supabase.from('product_images').insert({
-          product_id: productId,
-          url: urlData.publicUrl,
-          is_primary: baseCount === 0 && i === 0,
-          order: baseCount + i,
-        })
-      }))
-    }
-
     revalidatePath('/477973/productos')
     revalidatePath('/tienda')
     revalidatePath('/', 'layout')
     return { productId }
   } catch (e) {
     return { error: e instanceof Error ? e.message : 'Error inesperado al guardar' }
+  }
+}
+
+export async function recordImage(productId: string, url: string, isPrimary: boolean, order: number) {
+  try {
+    const supabase = createAdminClient()
+    const { error } = await supabase.from('product_images').insert({
+      product_id: productId,
+      url,
+      is_primary: isPrimary,
+      order,
+    })
+    if (error) return { error: error.message }
+    revalidatePath('/477973/productos')
+    revalidatePath('/tienda')
+    revalidatePath('/', 'layout')
+    return { ok: true }
+  } catch (e) {
+    return { error: e instanceof Error ? e.message : 'Error al registrar imagen' }
   }
 }
 

@@ -3,7 +3,8 @@
 import { useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
-import { saveProduct, deleteImage, setPrimaryImage } from './actions'
+import { saveProduct, recordImage, deleteImage, setPrimaryImage } from './actions'
+import { createBrowserSupabaseClient } from '@/lib/supabase-browser'
 import type { Collection, Product } from '@/lib/types'
 
 const ALL_SIZES = ['XS', 'S', 'M', 'L', 'XL', 'XXL', '3XL']
@@ -79,28 +80,65 @@ export default function ProductForm({ collections, product }: Props) {
     setSaving(true)
     setError('')
 
-    const formData = new FormData()
-    if (product?.id) formData.append('id', product.id)
-    formData.append('name', name)
-    formData.append('slug', slug)
-    formData.append('collection_id', collectionId)
-    extraCollectionIds.forEach(id => formData.append('extra_collection_ids', id))
-    formData.append('price', price)
-    formData.append('description', description)
-    sizes.forEach(s => formData.append('sizes', s))
-    formData.append('featured', String(featured))
-    formData.append('active', String(active))
-    formData.append('order', order)
-    newFiles.forEach(f => formData.append('images', f))
+    try {
+      // 1. Guardar metadata del producto (rápido, sin fotos)
+      const formData = new FormData()
+      if (product?.id) formData.append('id', product.id)
+      formData.append('name', name)
+      formData.append('slug', slug)
+      formData.append('collection_id', collectionId)
+      extraCollectionIds.forEach(id => formData.append('extra_collection_ids', id))
+      formData.append('price', price)
+      formData.append('description', description)
+      sizes.forEach(s => formData.append('sizes', s))
+      formData.append('featured', String(featured))
+      formData.append('active', String(active))
+      formData.append('order', order)
 
-    const result = await saveProduct(formData)
+      const result = await saveProduct(formData)
 
-    if ('error' in result && result.error) {
-      setError(result.error)
-      setSaving(false)
-    } else {
+      if ('error' in result && result.error) {
+        setError(result.error)
+        setSaving(false)
+        return
+      }
+
+      const productId = result.productId!
+
+      // 2. Subir fotos directo al storage de Supabase (sin pasar por el servidor)
+      if (newFiles.length > 0) {
+        const supabase = createBrowserSupabaseClient()
+
+        // Contar imágenes existentes para saber el order y is_primary
+        const { count: existingCount } = await supabase
+          .from('product_images')
+          .select('*', { count: 'exact', head: true })
+          .eq('product_id', productId)
+
+        const baseCount = existingCount ?? 0
+
+        for (let i = 0; i < newFiles.length; i++) {
+          const file = newFiles[i]
+          const ext = file.name.split('.').pop()
+          const path = `products/${productId}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
+
+          const { data: uploaded, error: uploadError } = await supabase.storage
+            .from('products')
+            .upload(path, file, { contentType: file.type })
+
+          if (uploadError) continue
+
+          const { data: urlData } = supabase.storage.from('products').getPublicUrl(uploaded.path)
+
+          await recordImage(productId, urlData.publicUrl, baseCount === 0 && i === 0, baseCount + i)
+        }
+      }
+
       router.push('/477973/productos')
       router.refresh()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Error inesperado')
+      setSaving(false)
     }
   }
 
