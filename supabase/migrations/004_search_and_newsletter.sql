@@ -1,9 +1,14 @@
 -- Búsqueda sin tildes
 create extension if not exists unaccent;
 
+create or replace function immutable_unaccent(text)
+  returns text
+  language sql immutable strict parallel safe as
+$$ select unaccent($1) $$;
+
 alter table products
   add column if not exists name_normalized text
-  generated always as (lower(unaccent(name))) stored;
+  generated always as (lower(immutable_unaccent(name))) stored;
 
 -- Newsletter
 create table if not exists newsletter_subscribers (
