@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import ProductCard from '@/components/ProductCard'
 import Masthead from '@/components/Masthead'
 import ColeccionFilters from './ColeccionFilters'
+import { normalizeSearch } from '@/lib/normalize'
 import type { Product, Collection } from '@/lib/types'
 
 interface Props {
@@ -36,7 +37,7 @@ export default async function ColeccionPage({ params, searchParams }: Props) {
       .eq('active', true)
       .or(`collection_id.eq.${collection.id},extra_collection_ids.cs.{${collection.id}}`)
 
-    if (q) query = query.ilike('name', `%${q}%`)
+    if (q) query = query.ilike('name_normalized', `%${normalizeSearch(q)}%`)
 
     if (orden === 'precio') {
       query = query.order('price', { ascending: true })

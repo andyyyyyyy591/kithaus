@@ -4,6 +4,7 @@ import { createPublicClient } from '@/lib/supabase-server'
 import ProductCard from '@/components/ProductCard'
 import Masthead from '@/components/Masthead'
 import TiendaFilters from './TiendaFilters'
+import { normalizeSearch } from '@/lib/normalize'
 import type { Product } from '@/lib/types'
 
 interface Props {
@@ -19,7 +20,7 @@ async function getProducts(orden: string, q: string): Promise<Product[]> {
       .eq('active', true)
 
     if (q) {
-      query = query.ilike('name', `%${q}%`)
+      query = query.ilike('name_normalized', `%${normalizeSearch(q)}%`)
     }
 
     if (orden === 'precio') {

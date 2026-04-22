@@ -6,6 +6,7 @@ import { createPublicClient } from '@/lib/supabase-server'
 import ProductCard from '@/components/ProductCard'
 import DecoRule from '@/components/DecoRule'
 import HomeSearch from '@/components/HomeSearch'
+import Newsletter from '@/components/Newsletter'
 import type { Product, Collection } from '@/lib/types'
 
 async function getFeaturedProducts(): Promise<Product[]> {
@@ -201,17 +202,7 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* PULL QUOTE */}
-      <section className="py-12 px-6 text-center" style={{ background: '#f0ead8' }}>
-        <div className="w-[32px] h-px mx-auto mb-5" style={{ background: '#9c7a52', opacity: 0.6 }} />
-        <blockquote
-          className="font-playfair italic whitespace-nowrap"
-          style={{ fontSize: 'clamp(14px, 2vw, 26px)', color: '#2a1f14' }}
-        >
-          "Algunas camisetas cargan la historia en la espalda."
-        </blockquote>
-        <div className="w-[32px] h-px mx-auto mt-5" style={{ background: '#9c7a52', opacity: 0.6 }} />
-      </section>
+      <Newsletter />
     </>
   )
 }
