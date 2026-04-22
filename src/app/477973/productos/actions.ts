@@ -20,11 +20,11 @@ export async function saveProduct(formData: FormData) {
     const order = parseInt(formData.get('order') as string) || 0
     const images = formData.getAll('images') as File[]
 
-    const payload = {
+    // Payload base sin extra_collection_ids (por si la columna no existe aún)
+    const basePayload = {
       name,
       slug,
       collection_id: collectionId || null,
-      extra_collection_ids: extraCollectionIds,
       price,
       description,
       sizes_available: sizes,
@@ -37,12 +37,42 @@ export async function saveProduct(formData: FormData) {
     let productId = id
 
     if (id) {
-      const { error } = await supabase.from('products').update(payload).eq('id', id)
-      if (error) return { error: error.message }
+      // Intentar con extra_collection_ids; si falla por columna inexistente, guardar sin ella
+      const { error } = await supabase
+        .from('products')
+        .update({ ...basePayload, extra_collection_ids: extraCollectionIds })
+        .eq('id', id)
+
+      if (error) {
+        if (error.message.includes('extra_collection_ids') || error.code === '42703') {
+          const { error: e2 } = await supabase.from('products').update(basePayload).eq('id', id)
+          if (e2) return { error: e2.message }
+        } else {
+          return { error: error.message }
+        }
+      }
     } else {
-      const { data, error } = await supabase.from('products').insert(payload).select('id').single()
-      if (error) return { error: error.message }
-      productId = data.id
+      const { data, error } = await supabase
+        .from('products')
+        .insert({ ...basePayload, extra_collection_ids: extraCollectionIds })
+        .select('id')
+        .single()
+
+      if (error) {
+        if (error.message.includes('extra_collection_ids') || error.code === '42703') {
+          const { data: d2, error: e2 } = await supabase
+            .from('products')
+            .insert(basePayload)
+            .select('id')
+            .single()
+          if (e2) return { error: e2.message }
+          productId = d2.id
+        } else {
+          return { error: error.message }
+        }
+      } else {
+        productId = data.id
+      }
     }
 
     // Subir imágenes nuevas en paralelo

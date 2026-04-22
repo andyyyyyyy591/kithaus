@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { createPublicClient } from '@/lib/supabase-server'
 import ProductCard from '@/components/ProductCard'
 import DecoRule from '@/components/DecoRule'
+import HomeSearch from '@/components/HomeSearch'
 import type { Product, Collection } from '@/lib/types'
 
 async function getFeaturedProducts(): Promise<Product[]> {
@@ -112,9 +113,12 @@ export default async function Home() {
           <p className="font-cormorant text-[11px] uppercase mb-2" style={{ letterSpacing: '4px', color: '#9c7a52' }}>
             Selección del Editor
           </p>
-          <h2 className="font-playfair font-bold text-4xl mb-2" style={{ color: '#2a1f14' }}>
-            Camisetas <em className="font-normal italic">Destacadas</em>
-          </h2>
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-2">
+            <h2 className="font-playfair font-bold text-4xl" style={{ color: '#2a1f14' }}>
+              Camisetas <em className="font-normal italic">Destacadas</em>
+            </h2>
+            <HomeSearch />
+          </div>
           <div className="w-full h-px mb-10" style={{ background: 'rgba(42,31,20,0.15)' }} />
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8">
